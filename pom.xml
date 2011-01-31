@@ -20,6 +20,7 @@
         <maven.scaladoc.vscaladocVersion>1.2-m1</maven.scaladoc.vscaladocVersion>
         <vscaladoc.links.liftweb.pathsufix>scaladocs/</vscaladoc.links.liftweb.pathsufix>
         <vscaladoc.links.liftweb.baseurl>http://scala-tools.org/mvnsites/liftweb</vscaladoc.links.liftweb.baseurl>
+        <gae.version>1.4.0</gae.version>
     </properties>
 
     <!-- Set up repo for ScalaJPA -->
@@ -29,6 +30,11 @@
             <name>Scala-Tools Dependencies Repository for Releases</name>
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
+        <repository>
+            <id>google-maven-repo</id>
+            <name>Google Maven Repository</name>
+            <url>http://google-maven-repository.googlecode.com/svn/repository/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -37,9 +43,74 @@
             <name>Scala-Tools Plugins Repository for Releases</name>
             <url>http://scala-tools.org/repo-releases</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>maven-gae-plugin-repo</id>
+            <name>Maven Google App Engine Repository</name>
+            <url>http://maven-gae-plugin.googlecode.com/svn/repository/</url>
+        </pluginRepository>
     </pluginRepositories>
 
     <dependencies>
+        <!-- jars from GAE's "lib/user" must be added as compile-time dependencies, as described
+             here in "Copying JARs" section: http://code.google.com/appengine/docs/java/tools/ant.html -->
+        <dependency>
+            <groupId>javax.jdo</groupId>
+            <artifactId>jdo2-api</artifactId>
+            <version>2.3-eb</version>
+            <exclusions>
+                <!-- exclude the legacy javax.transaction:transaction-api and replace it with javax.transaction:jta
+         (it appears to be the same thing) -->
+                <exclusion>
+                    <groupId>javax.transaction</groupId>
+                    <artifactId>transaction-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.appengine.orm</groupId>
+            <artifactId>datanucleus-appengine</artifactId>
+            <version>1.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-core</artifactId>
+            <version>1.1.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.transaction</groupId>
+                    <artifactId>transaction-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+            <version>${gae.version}</version>
+        </dependency>
+        <dependency>
+            <!-- install from local google app engine java sdk -
+            mvn install:install-file -DgroupId=com.google.appengine -Dpackaging=jar -DartifactId=datanucleus-jpa -Dversion=1.1.5 -Dfile=/usr/local/appengine-java-sdk/lib/user/orm/datanucleus-jpa-1.1.5.jar
+            -->
+            <groupId>com.google.appengine</groupId>
+            <artifactId>datanucleus-jpa</artifactId>
+            <version>1.1.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <!--
+            <groupId>com.google.appengine</groupId>
+            <artifactId>geronimo-jpa_3.0_spec</artifactId>
+            -->
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jpa_3.0_spec</artifactId>
+            <version>1.1.1</version>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>net.liftweb</groupId>
             <artifactId>lift-jpa_2.8.1</artifactId>
@@ -54,28 +125,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>0.9.26</version>
-        </dependency>
-        <dependency>
-            <groupId>geronimo-spec</groupId>
-            <artifactId>geronimo-spec-ejb</artifactId>
-            <version>2.1-rc4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.transaction</groupId>
-                    <artifactId>jta</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.4.2.0</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -108,6 +157,28 @@
             <version>4.7</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-labs</artifactId>
+            <version>${gae.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-stubs</artifactId>
+            <version>${gae.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-testing</artifactId>
+            <version>${gae.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -117,7 +188,7 @@
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
-                <version>2.14.3</version>
+                <version>2.15.1</version>
                 <configuration>
                     <charset>${project.build.sourceEncoding}</charset>
                     <jvmArgs>
@@ -166,21 +237,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.25</version>
-                <configuration>
-                    <contextPath>/</contextPath>
-                    <scanIntervalSeconds>5</scanIntervalSeconds>
-                    <connectors>
-                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>9090</port>
-                            <maxIdleTime>60000</maxIdleTime>
-                        </connector>
-                    </connectors>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>net.sf.alchim</groupId>
                 <artifactId>yuicompressor-maven-plugin</artifactId>
                 <version>0.7.1</version>
@@ -227,6 +283,103 @@
                     </classpathContainers>
                 </configuration>
             </plugin>
+            <!-- This plug-in "enhances" your domain model objects (i.e. makes them persistent for
+                  datanucleus) -->
+            <plugin>
+                <groupId>org.datanucleus</groupId>
+                <artifactId>maven-datanucleus-plugin</artifactId>
+                <version>1.1.4</version>
+                <configuration>
+                    <!-- Make sure this path contains your persistent classes! -->
+                    <mappingIncludes>**/model/*.class</mappingIncludes>
+                    <verbose>true</verbose>
+                    <enhancerName>ASM</enhancerName>
+                    <api>JDO</api>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-core</artifactId>
+                        <version>1.1.5</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>javax.transaction</groupId>
+                                <artifactId>transaction-api</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-rdbms</artifactId>
+                        <version>1.1.5</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-enhancer</artifactId>
+                        <version>1.1.4</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>**/appengine-web.xml</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+
+            <!-- The actual maven-gae-plugin. Type "mvn gae:run" to run project, "mvn gae:deploy"
+                   to upload to GAE. -->
+            <plugin>
+                <groupId>net.kindleit</groupId>
+                <artifactId>maven-gae-plugin</artifactId>
+                <version>0.8.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.kindleit</groupId>
+                        <artifactId>gae-runtime</artifactId>
+                        <version>${gae.version}</version>
+                        <type>pom</type>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!-- Upload application to the appspot automatically, during release:perform -->
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <goals>gae:deploy</goals>
+                </configuration>
+            </plugin>
+
+            <!-- Java compiler version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -245,4 +398,5 @@
             </plugin>
         </plugins>
     </reporting>
+
 </project>
