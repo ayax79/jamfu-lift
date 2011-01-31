@@ -4,9 +4,14 @@
     <version>2</version>
 
     <system-properties>
+        <property name="in.gae.j" value="true"/>
         <property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties"/>
     </system-properties>
 
     <sessions-enabled>true</sessions-enabled>
+
+    <static-files>
+        <exclude path="/**"/>
+    </static-files>
 
 </appengine-web-app>

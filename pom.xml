@@ -119,6 +119,21 @@
             <version>2.2</version>
         </dependency>
         <dependency>
+            <groupId>net.liftweb</groupId>
+            <artifactId>lift-openid_2.8.1</artifactId>
+            <version>2.2-RC5</version>
+        </dependency>
+        <dependency>
+            <groupId>net.liftweb</groupId>
+            <artifactId>lift-facebook_2.8.1</artifactId>
+            <version>2.2-RC5</version>
+        </dependency>
+        <dependency>
+            <groupId>net.liftweb</groupId>
+            <artifactId>lift-oauth_2.8.1</artifactId>
+            <version>2.2-RC5</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.6.1</version>
