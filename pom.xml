@@ -12,6 +12,8 @@
     <name>jamfu-lift Project</name>
     <inceptionYear>2010</inceptionYear>
     <properties>
+        <!-- override this in settings.xml if this is not where your gae java sdk is located -->
+        <gae.home>/usr/local/appengine-java-sdk</gae.home>
         <scala.version>2.8.1</scala.version>
         <!-- Common plugin settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
