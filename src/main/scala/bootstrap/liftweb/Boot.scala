@@ -16,15 +16,14 @@
 package bootstrap.liftweb
 
 import _root_.net.liftweb.http._
-import com.redpillsystems.jamfu.model._
 /**
   * A class that's instantiated early and run.  It allows the application
   * to modify lift's environment
   */
 class Boot {
   def boot {
-    // where to search for snippets, views, etc
-    LiftRules.addToPackages("com.redpillsystems.jamfu")
+    // where to search for snippet, views, etc
+    // LiftRules.addToPackages("com.redpillsystems.jamfu")
   }
 }
 
