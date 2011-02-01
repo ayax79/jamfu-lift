@@ -22,8 +22,10 @@ import _root_.net.liftweb.http._
   */
 class Boot {
   def boot {
+    LiftRules.useXhtmlMimeType = false // because facebook sucks
+
     // where to search for snippet, views, etc
-    // LiftRules.addToPackages("com.redpillsystems.jamfu")
+    LiftRules.addToPackages("com.redpillsystems.jamfu")
   }
 }
 

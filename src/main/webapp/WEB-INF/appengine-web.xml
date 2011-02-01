@@ -6,6 +6,7 @@
     <system-properties>
         <property name="in.gae.j" value="true"/>
         <property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties"/>
+        <property name="facebook.client.id" value="119681858044432" />
     </system-properties>
 
     <sessions-enabled>true</sessions-enabled>
