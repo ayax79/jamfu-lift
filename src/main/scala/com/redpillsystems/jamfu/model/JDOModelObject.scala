@@ -13,11 +13,11 @@ trait JDOModelObject {
   @Persistent var created = new Date
   @Persistent var modified = new Date
 
-  def save = {
+  def save:Unit = {
     modified = new Date
     PersistenceHelper.save(this)
   }
 
-  def delete = PersistenceHelper.delete(this)
+  def delete:Unit = PersistenceHelper.delete(this)
 
 }

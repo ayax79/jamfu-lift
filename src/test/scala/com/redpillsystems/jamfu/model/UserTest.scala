@@ -1,7 +1,6 @@
 package com.redpillsystems.jamfu.model
 
 import org.junit.Test
-import com.google.appengine.api.datastore.Key
 import junit.framework.Assert._
 
 class UserTest extends GoogleTest {
@@ -12,11 +11,16 @@ class UserTest extends GoogleTest {
     val u = new User("foobar", "foo", "bar", "foo@bar.com")
     u.save
 
+    System.out.println(u.key)
+    assertNotNull(u.key)
+
     User.findByUsername("foobar") match {
       case None => fail("should of returned a result")
-      case Some(u1) => assertEquals(u.firstName, u1.firstName)
+      case Some(u1) =>
+        assertEquals(u.firstName, u1.firstName)
+        u1.delete
+        assertTrue("User should not exist", User.findByUsername("foobar").isEmpty)
     }
-
 
   }
 
