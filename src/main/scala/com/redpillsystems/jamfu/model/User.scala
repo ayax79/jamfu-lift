@@ -1,11 +1,7 @@
 package com.redpillsystems.jamfu.model
 
-import com.google.appengine.api.datastore.Key
-import org.joda.time.DateTime
 import PersistenceHelper._
 import javax.jdo.annotations._
-import java.util.Date
-
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 class User extends JDOModelObject {
