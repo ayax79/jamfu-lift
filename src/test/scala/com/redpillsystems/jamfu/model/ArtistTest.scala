@@ -8,8 +8,7 @@ class ArtistTest extends GoogleTest {
 
   @Test
   def testCrud:Unit = {
-    val u = new User("artisttestuser", "ArtistUserFirst", "ArtistTestUserLast", "artist@sdflkj.com")
-    u.save
+    val u = new User("artisttestuser", "ArtistUserFirst", "ArtistTestUserLast", "artist@sdflkj.com").save
 
     def artist = new Artist("testartist", Set(u))
     artist.save

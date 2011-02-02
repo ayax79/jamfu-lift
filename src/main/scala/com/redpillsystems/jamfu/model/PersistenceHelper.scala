@@ -1,15 +1,15 @@
 package com.redpillsystems.jamfu.model
 
 import collection.JavaConversions._
-import javax.jdo.{PersistenceManager, JDOHelper, PersistenceManagerFactory}
 import java.util.{List => JList}
 import collection.JavaConversions
+import javax.jdo.{Transaction, PersistenceManager, JDOHelper, PersistenceManagerFactory}
 
 protected[model] object PersistenceHelper {
 
   lazy val instance: PersistenceManagerFactory = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 
-  def save(ar: JDOModelObject):Unit = perform((pm: PersistenceManager) => pm.makePersistent(ar))
+  def save[T](ar: T):T = perform((pm: PersistenceManager) => pm.makePersistent(ar))
 
   def query[T](query: String, params: AnyRef = null): List[T] = perform{
     pm: PersistenceManager =>
@@ -30,14 +30,14 @@ protected[model] object PersistenceHelper {
     case head :: _ => Some(head)
   }
 
-  def delete(ar: JDOModelObject) = perform{
+  def delete[T](ar: JDOModelObject[T]) = perform{
     pm: PersistenceManager =>
       val ar2 = pm.getObjectById(ar.getClass, ar.key)
       pm.deletePersistent(ar2)
   }
 
 
-  def perform[T](func: (PersistenceManager => T)) = {
+  def perform[T](func: (PersistenceManager => T)): T = {
     val pm: PersistenceManager = instance.getPersistenceManager
     try {
       func(pm)
