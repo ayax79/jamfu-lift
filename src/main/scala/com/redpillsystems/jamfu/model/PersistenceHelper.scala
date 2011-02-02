@@ -2,6 +2,8 @@ package com.redpillsystems.jamfu.model
 
 import collection.JavaConversions._
 import javax.jdo.{PersistenceManager, JDOHelper, PersistenceManagerFactory}
+import java.util.{List => JList}
+import collection.JavaConversions
 
 object PersistenceHelper {
 
@@ -13,12 +15,12 @@ object PersistenceHelper {
   def query[T](query: String, params:AnyRef = null): Option[List[T]] = perform {
     pm: PersistenceManager =>
       val q = pm.newQuery(query)
-      val result = params match {
-        case map:Map[_,_] => q.executeWithMap(map)
-        case _ => q.execute()
+      val result:JList[T] = params match {
+        case map:Map[_,_] => q.executeWithMap(map).asInstanceOf[JList[T]]
+        case _ => q.execute.asInstanceOf[JList[T]]
       }
 
-      result.asInstanceOf[List[T]] match {
+      JavaConversions.asScalaIterable(result).toList match {
         case null => None
         case Nil => None
         case s@_ => Some(s)
