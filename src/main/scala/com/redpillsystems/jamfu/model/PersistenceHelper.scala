@@ -26,7 +26,7 @@ object PersistenceHelper {
       }
   }
 
-  def queryFirst[T](q: String, params:AnyRef): Option[T] = query(q, params) match {
+  def queryFirst[T](q: String, params:AnyRef = null): Option[T] = query(q, params) match {
     case Nil => None
     case head::_ => Some(head)
   }
