@@ -12,8 +12,11 @@ class UserTest extends GoogleTest {
     val u = new User("foobar", "foo", "bar", "foo@bar.com")
     u.save
 
-    val result = User.findByUsername("foobar")
-    assertNotNull(result)
+    User.findByUsername("foobar") match {
+      case None => fail("should of returned a result")
+      case Some(u1) => assertEquals(u.firstName, u1.firstName)
+    }
+
 
   }
 

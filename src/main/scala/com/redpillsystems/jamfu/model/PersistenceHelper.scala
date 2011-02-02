@@ -12,7 +12,7 @@ object PersistenceHelper {
   def save(ar: AnyRef) = perform((pm: PersistenceManager) => pm.makePersistent(ar))
 
 
-  def query[T](query: String, params:AnyRef = null): Option[List[T]] = perform {
+  def query[T](query: String, params:AnyRef = null): List[T] = perform {
     pm: PersistenceManager =>
       val q = pm.newQuery(query)
       val result:JList[T] = params match {
@@ -21,15 +21,14 @@ object PersistenceHelper {
       }
 
       JavaConversions.asScalaIterable(result).toList match {
-        case null => None
-        case Nil => None
-        case s@_ => Some(s)
+        case null => Nil
+        case s@_ => s
       }
   }
 
   def queryFirst[T](q: String, params:AnyRef): Option[T] = query(q, params) match {
-    case Some(s: List[T]) => Some(s.last)
-    case _ => None
+    case Nil => None
+    case head::_ => Some(head)
   }
 
   def delete(ar: AnyRef) = perform((pm: PersistenceManager) => pm.deletePersistent(ar))

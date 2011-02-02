@@ -10,7 +10,6 @@ import java.util.Date
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 class User extends JDOModelObject {
 
-  @PrimaryKey @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY) var key: Key = _
 
   @Persistent var username: String = _
   @Persistent var firstName: String = _
