@@ -6,18 +6,24 @@ import PersistenceHelper._
 import javax.jdo.annotations._
 import java.util.Date
 
-@PersistenceCapable
-class User(@PrimaryKey @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY) val key: Key,
-           @Index @Persistent var username: String,
-           @Persistent var firstName: String,
-           @Persistent var lastName: String,
-           @Persistent var email: String,
-           @Persistent var created: Date,
-           @Persistent var modified: Date) extends JDOModelObject {
 
-  def this(username: String, firstName: String, lastName: String, email: String) =
-    this(null, username, firstName, lastName, email, new Date, new Date)
+@PersistenceCapable(identityType = IdentityType.APPLICATION)
+class User extends JDOModelObject {
 
+  @PrimaryKey @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY) var key: Key = _
+
+  @Persistent var username: String = _
+  @Persistent var firstName: String = _
+  @Persistent var lastName: String = _
+  @Persistent var email: String = _
+
+  def this(_username: String, _firstName:String, _lastname:String, _email:String) = {
+    this()
+    username = _username
+    firstName = _firstName
+    lastName = _lastname
+    email = _email
+  }
 
 }
 
