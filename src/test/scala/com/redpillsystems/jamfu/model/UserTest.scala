@@ -26,4 +26,13 @@ class UserTest extends GoogleTest {
   }
 
 
+  @Test
+  def testSaveWithErrors:Unit = {
+    val u = new User
+    val errors = perform(ph => u.save(ph))
+    assertEquals(2, errors.length)
+    assertTrue(errors.contains(RequiredError("username")))
+    assertTrue(errors.contains(RequiredError("email")))
+  }
+
 }

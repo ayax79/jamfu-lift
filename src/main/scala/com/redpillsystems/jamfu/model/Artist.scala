@@ -23,7 +23,7 @@ class Artist extends JDOModel {
 
 }
 
-object Artist extends JDOModelObject {
+object Artist {
 
   protected val className = classOf[Artist].getName
 
@@ -35,5 +35,8 @@ object Artist extends JDOModelObject {
    * @param u The member to find the artist by
    */
   def findByMember(u: User): Option[Artist] = queryFirst("select from " + className + " where memberKeys == :key", Map("key" -> u.key))
+
+
+  def findByKey(key: Key) = PersistenceHelper.findByKey(classOf[Artist], key)
 
 }

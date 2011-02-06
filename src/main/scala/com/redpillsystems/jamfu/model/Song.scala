@@ -11,5 +11,3 @@ class Song extends JDOModel {
   @Persistent var votes: Long = 0L
 
 }
-
-object Song extends JDOModelObject

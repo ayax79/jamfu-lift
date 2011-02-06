@@ -4,6 +4,7 @@ import collection.JavaConversions._
 import java.util.{List => JList}
 import collection.JavaConversions
 import javax.jdo.{Transaction, PersistenceManager, JDOHelper, PersistenceManagerFactory}
+import com.google.appengine.api.datastore.Key
 
 object PersistenceHelper {
 
@@ -13,6 +14,12 @@ object PersistenceHelper {
 
   def queryFirst[T](q: String, params: AnyRef = null): Option[T] = perform(ph => ph.queryFirst(q, params))
 
+  def findByKey[T <: JDOModel](cl: Class[T], key: Key):Option[T] = perform {
+    ph => ph.pm.getObjectById(cl, key) match {
+      case null => None
+      case s@_ => Some(s)
+    }
+  }
 
   def perform[T](func: (PersistenceHelper => T)): T = {
     val pm: PersistenceManager = instance.getPersistenceManager

@@ -27,16 +27,6 @@ trait JDOModel {
 
 }
 
-abstract class JDOModelObject[T >: JDOModel](implicit m: Manifest[T]) {
+abstract class ValidationError(msg: String)
+case class RequiredError(msg: String) extends ValidationError(msg)
 
-  def findByKey(key: Key): Option[T] = PersistenceHelper.perform {
-    ph => ph.pm.getObjectById(m.erasure, key).asInstanceOf[T] match {
-      case null => None
-      case x@_ => Some(x)
-    }
-  }
-
-}
-
-
-trait ValidationError
