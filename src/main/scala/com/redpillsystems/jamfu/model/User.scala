@@ -4,7 +4,7 @@ import PersistenceHelper._
 import javax.jdo.annotations._
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-class User extends JDOModelObject {
+class User extends JDOModel {
 
 
   @Persistent var username: String = _
@@ -22,7 +22,7 @@ class User extends JDOModelObject {
 
 }
 
-object User {
+object User extends JDOModelObject {
 
   def findByUsername(username: String): Option[User] =
     queryFirst("select from " + classOf[User].getName + " where username == :username", Map("username" -> username))

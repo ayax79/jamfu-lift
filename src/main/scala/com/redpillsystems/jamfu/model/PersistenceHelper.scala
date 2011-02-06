@@ -34,7 +34,7 @@ object PersistenceHelper {
   }
 }
 
-class PersistenceHelper(pm: PersistenceManager) {
+class PersistenceHelper(val pm: PersistenceManager) {
   def query[T](query: String, params: AnyRef = null): List[T] = {
     val q = pm.newQuery(query)
     val result: JList[T] = params match {
@@ -53,7 +53,7 @@ class PersistenceHelper(pm: PersistenceManager) {
     case head :: _ => Some(head)
   }
 
-  def delete(ar: JDOModelObject) = {
+  def delete(ar: JDOModel) = {
     val ar2 = pm.getObjectById(ar.getClass, ar.key)
     pm.deletePersistent(ar2)
   }
