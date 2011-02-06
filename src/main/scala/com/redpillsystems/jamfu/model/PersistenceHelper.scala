@@ -5,24 +5,47 @@ import java.util.{List => JList}
 import collection.JavaConversions
 import javax.jdo.{Transaction, PersistenceManager, JDOHelper, PersistenceManagerFactory}
 
-protected[model] object PersistenceHelper {
+object PersistenceHelper {
 
-  lazy val instance: PersistenceManagerFactory = JDOHelper.getPersistenceManagerFactory("transactions-optional");
+  @volatile var instance: PersistenceManagerFactory = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 
-  def save[T](ar: T):T = perform((pm: PersistenceManager) => pm.makePersistent(ar))
+  def query[T](query: String, params: AnyRef = null): List[T] = perform(ph => ph.query(query, params))
 
-  def query[T](query: String, params: AnyRef = null): List[T] = perform{
-    pm: PersistenceManager =>
-      val q = pm.newQuery(query)
-      val result: JList[T] = params match {
-        case map: Map[_, _] => q.executeWithMap(map).asInstanceOf[JList[T]]
-        case _ => q.execute.asInstanceOf[JList[T]]
-      }
+  def queryFirst[T](q: String, params: AnyRef = null): Option[T] = perform(ph => ph.queryFirst(q, params))
 
-      JavaConversions.asScalaIterable(result).toList match {
-        case null => Nil
-        case s@_ => s
-      }
+
+  def perform[T](func: (PersistenceHelper => T)): T = {
+    val pm: PersistenceManager = instance.getPersistenceManager
+    val tx: Transaction = pm.currentTransaction
+    tx.begin
+    try {
+      val result: T = func(new PersistenceHelper(pm))
+      tx.commit
+      result
+    }
+    catch {
+      case e: Exception =>
+        tx.rollback
+        throw e
+    }
+    finally {
+      pm.close
+    }
+  }
+}
+
+class PersistenceHelper(pm: PersistenceManager) {
+  def query[T](query: String, params: AnyRef = null): List[T] = {
+    val q = pm.newQuery(query)
+    val result: JList[T] = params match {
+      case map: Map[_, _] => q.executeWithMap(map).asInstanceOf[JList[T]]
+      case _ => q.execute.asInstanceOf[JList[T]]
+    }
+
+    JavaConversions.asScalaIterable(result).toList match {
+      case null => Nil
+      case s@_ => s
+    }
   }
 
   def queryFirst[T](q: String, params: AnyRef = null): Option[T] = query(q, params) match {
@@ -30,20 +53,12 @@ protected[model] object PersistenceHelper {
     case head :: _ => Some(head)
   }
 
-  def delete[T](ar: JDOModelObject[T]) = perform{
-    pm: PersistenceManager =>
-      val ar2 = pm.getObjectById(ar.getClass, ar.key)
-      pm.deletePersistent(ar2)
+  def delete(ar: JDOModelObject) = {
+    val ar2 = pm.getObjectById(ar.getClass, ar.key)
+    pm.deletePersistent(ar2)
   }
 
-
-  def perform[T](func: (PersistenceManager => T)): T = {
-    val pm: PersistenceManager = instance.getPersistenceManager
-    try {
-      func(pm)
-    } finally {
-      pm.close
-    }
-  }
+  def save(ar: AnyRef):Unit = pm.makePersistent(ar)
 
 }
+

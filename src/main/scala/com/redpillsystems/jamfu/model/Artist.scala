@@ -7,7 +7,7 @@ import PersistenceHelper._
 import javax.jdo.annotations.{IdentityType, PersistenceCapable, Persistent}
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-class Artist extends JDOModelObject[Artist] {
+class Artist extends JDOModelObject {
 
   @Persistent var name: String = _
 

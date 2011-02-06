@@ -4,7 +4,7 @@ import PersistenceHelper._
 import javax.jdo.annotations._
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-class User extends JDOModelObject[User] {
+class User extends JDOModelObject {
 
 
   @Persistent var username: String = _

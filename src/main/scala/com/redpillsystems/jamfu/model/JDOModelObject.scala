@@ -4,18 +4,27 @@ import javax.jdo.annotations.{IdGeneratorStrategy, PrimaryKey, Persistent}
 import com.google.appengine.api.datastore.Key
 import java.util.Date
 
-trait JDOModelObject[T] {
+trait JDOModelObject {
 
   @PrimaryKey @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY) var key: Key = _
 
   @Persistent var created = new Date
   @Persistent var modified = new Date
 
-  def save:T = {
+  final def save(ph: PersistenceHelper):List[ValidationError] = {
     modified = new Date
-    PersistenceHelper.save(this.asInstanceOf[T])
+    validate match {
+      case Nil =>
+        ph.save(this)
+        Nil
+      case errors@_ => errors
+    }
   }
 
-  def delete:Unit = PersistenceHelper.delete(this)
+  final def delete(ph: PersistenceHelper):Unit = ph.delete(this)
+
+  protected def validate:List[ValidationError] = Nil
 
 }
+
+trait ValidationError
