@@ -5,16 +5,17 @@ import java.util.{List => JList}
 import collection.JavaConversions
 import javax.jdo.{Transaction, PersistenceManager, JDOHelper, PersistenceManagerFactory}
 import com.google.appengine.api.datastore.Key
+import net.liftweb.common.{Full, Empty, Failure, Box}
 
 object PersistenceHelper {
 
   @volatile var instance: PersistenceManagerFactory = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 
-  def query[T](query: String, params: AnyRef = null): List[T] = perform(ph => ph.query(query, params))
+  def findAll[T](query: String, params: AnyRef = null): List[T] = perform(ph => ph.findAll(query, params))
 
-  def queryFirst[T](q: String, params: AnyRef = null): Option[T] = perform(ph => ph.queryFirst(q, params))
+  def find[T](q: String, params: AnyRef = null): Box[T] = perform(ph => ph.find(q, params))
 
-  def findByKey[T <: JDOModel](cl: Class[T], key: Key):Option[T] = perform {
+  def findByKey[T <: JDOModel](cl: Class[T], key: Key):Box[T] = perform {
     ph => ph.pm.getObjectById(cl, key) match {
       case null => None
       case s@_ => Some(s)
@@ -42,7 +43,7 @@ object PersistenceHelper {
 }
 
 class PersistenceHelper(val pm: PersistenceManager) {
-  def query[T](query: String, params: AnyRef = null): List[T] = {
+  def findAll[T](query: String, params: AnyRef = null): List[T] = {
     val q = pm.newQuery(query)
     val result: JList[T] = params match {
       case map: Map[_, _] => q.executeWithMap(map).asInstanceOf[JList[T]]
@@ -55,9 +56,9 @@ class PersistenceHelper(val pm: PersistenceManager) {
     }
   }
 
-  def queryFirst[T](q: String, params: AnyRef = null): Option[T] = query(q, params) match {
+  def find[T](q: String, params: AnyRef = null): Option[T] = findAll(q, params) match {
     case Nil => None
-    case head :: _ => Some(head)
+    case head :: _ => Full(head)
   }
 
   def delete(ar: JDOModel) = {

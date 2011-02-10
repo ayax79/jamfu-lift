@@ -3,6 +3,7 @@ package com.redpillsystems.jamfu.model
 import PersistenceHelper._
 import com.google.appengine.api.datastore.Key
 import javax.jdo.annotations._
+import net.liftweb.common.Box
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 class User extends JDOModel {
@@ -35,8 +36,8 @@ class User extends JDOModel {
 
 object User {
 
-  def findByUsername(username: String): Option[User] =
-    queryFirst("select from " + classOf[User].getName + " where username == :username", Map("username" -> username))
+  def findByUsername(username: String): Box[User] =
+    find("select from " + classOf[User].getName + " where username == :username", Map("username" -> username))
 
   def findByKey(key: Key) = PersistenceHelper.findByKey(classOf[User], key)
 

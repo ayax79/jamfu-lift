@@ -6,7 +6,10 @@
     <system-properties>
         <property name="in.gae.j" value="true"/>
         <property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties"/>
-        <property name="facebook.client.id" value="119681858044432" />
+        <property name="facebook.app.id" value="119681858044432" />
+        <property name="facebook.api.key" value="32e800dec1c23f116038e0bc8641ee88" />
+        <property name="facebook.app.secret" value="8225f22b8c9e5fa3af75c0d85280adbb" />
+
     </system-properties>
 
     <sessions-enabled>true</sessions-enabled>

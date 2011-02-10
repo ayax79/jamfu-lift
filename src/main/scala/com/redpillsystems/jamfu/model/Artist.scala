@@ -27,14 +27,14 @@ object Artist {
 
   protected val className = classOf[Artist].getName
 
-  def findByName(nm: String): Option[Artist] = queryFirst("select from " + className + " where name == :name", Map("name" -> nm))
+  def findByName(nm: String): Option[Artist] = find("select from " + className + " where name == :name", Map("name" -> nm))
 
 
   /**
    * Finds an artist by one of it's members
-   * @param u The member to find the artist by
+   * @param u The member to findAll the artist by
    */
-  def findByMember(u: User): Option[Artist] = queryFirst("select from " + className + " where memberKeys == :key", Map("key" -> u.key))
+  def findByMember(u: User): Option[Artist] = find("select from " + className + " where memberKeys == :key", Map("key" -> u.key))
 
 
   def findByKey(key: Key) = PersistenceHelper.findByKey(classOf[Artist], key)
