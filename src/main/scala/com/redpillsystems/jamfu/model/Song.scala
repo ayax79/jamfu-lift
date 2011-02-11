@@ -3,7 +3,7 @@ package com.redpillsystems.jamfu.model
 import javax.jdo.annotations.{IdentityType, PersistenceCapable, Persistent}
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-class Song extends JDOModel {
+class Song extends JDOModel[Song] {
 
   @Persistent var artist: Artist = _
   @Persistent var name: String = _

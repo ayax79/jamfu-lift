@@ -15,7 +15,7 @@ object PersistenceHelper {
 
   def find[T](q: String, params: AnyRef = null): Box[T] = perform(ph => ph.find(q, params))
 
-  def findByKey[T <: JDOModel](cl: Class[T], key: Key):Box[T] = perform {
+  def findByKey[T <: JDOModel[T]](cl: Class[T], key: Key):Box[T] = perform {
     ph => ph.pm.getObjectById(cl, key) match {
       case null => None
       case s@_ => Some(s)
@@ -61,8 +61,8 @@ class PersistenceHelper(val pm: PersistenceManager) {
     case head :: _ => Full(head)
   }
 
-  def delete(ar: JDOModel) = {
-    val ar2 = pm.getObjectById(ar.getClass, ar.key)
+  def delete(ar: JDOModel[_]) = {
+    val ar2 = pm.getObjectById(ar.getClass, ar.key.is)
     pm.deletePersistent(ar2)
   }
 

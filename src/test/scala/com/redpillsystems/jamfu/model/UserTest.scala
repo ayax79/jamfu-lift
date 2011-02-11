@@ -12,25 +12,16 @@ class UserTest extends GoogleTest {
   @Test
   def testSave: Unit = {
     val u = new User("foobar", "foo", "bar", "foo@bar.com")
-    perform(ph => u.save(ph))
+    u.save
 
-    System.out.println(u.key)
-    assertNotNull(u.key)
+    System.out.println(u.key.is)
+    assertNotNull(u.key.is)
 
     val u1 = User.findByUsername("foobar").open_!
-    assertEquals(u.firstName, u1.firstName)
-    perform(ph => u1.delete(ph))
+    assertEquals(u.firstName.is, u1.firstName.is)
+    u1.delete_!
     assertTrue("User should not exist", User.findByUsername("foobar").isEmpty)
   }
 
-
-  @Test
-  def testSaveWithErrors: Unit = {
-    val u = new User
-    val errors = perform(ph => u.save(ph))
-    assertEquals(2, errors.length)
-    assertTrue(errors.contains(RequiredError("username")))
-    assertTrue(errors.contains(RequiredError("email")))
-  }
 
 }
