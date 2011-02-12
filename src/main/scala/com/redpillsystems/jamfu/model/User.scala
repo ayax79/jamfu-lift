@@ -6,6 +6,7 @@ import javax.jdo.annotations._
 import java.lang.String
 import net.liftweb.http.{CleanRequestVarOnSessionTransition, RequestVar, SessionVar}
 import net.liftweb.common.{Full, Empty, Box}
+import net.liftweb.sitemap.Menu
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 class User extends JDOModel[User] {
@@ -88,11 +89,14 @@ object User {
 
   def currentUser: Box[User] = curUser.is
 
-  def logUserIn(who:User) = {
+  def logUserIn(who: User) = {
     curUserKey.remove()
     curUser.remove()
     curUserKey(Full(who.key.is))
   }
 
+  def loggedIn_? = {
+    currentUserKey.isDefined
+  }
 
 }

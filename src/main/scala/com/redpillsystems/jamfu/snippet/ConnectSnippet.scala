@@ -16,7 +16,7 @@ class ConnectSnippet {
     Script(Call("FB.init", Str(FacebookRestApi.apiKey), Str("/xd_receiver.html")))
   }
 
-//todo  def fbloginLink: NodeSeq = SHtml.a(Text("Login With Fb"), loginCmd)
+  def fbloginLink: NodeSeq = SHtml.a(Text("Login With Fb"), loginCmd)
 
   def redirectRoot = RedirectTo("/")
 
