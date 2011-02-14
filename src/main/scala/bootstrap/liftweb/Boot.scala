@@ -18,7 +18,6 @@ package bootstrap.liftweb
 import _root_.net.liftweb.http._
 import net.liftweb.util.LoanWrapper
 import com.redpillsystems.jamfu.model.User
-import net.liftweb.ext_api.facebook.FacebookConnect
 import net.liftweb.common.Full
 import provider.HTTPRequest
 import net.liftweb.sitemap.{Menu, Loc, SiteMap}
@@ -54,16 +53,16 @@ class Boot {
     LiftRules.loggedInTest = Full(() => User.loggedIn_?)
 
     //this is optional. Provides SSO for users already logged in to facebook.com
-    S.addAround(List(new LoanWrapper {
-      def apply[N](f: => N): N = {
-        if (!User.loggedIn_?) {
-          for (c <- FacebookConnect.client; user <- User.findByFbId(c.session.uid)) {
-            User.logUserIn(user)
-          }
-        }
-        f
-      }
-    }))
+//    S.addAround(List(new LoanWrapper {
+//      def apply[N](f: => N): N = {
+//        if (!User.loggedIn_?) {
+//          for (c <- FacebookConnect.client; user <- User.findByFbId(c.session.uid)) {
+//            User.logUserIn(user)
+//          }
+//        }
+//        f
+//      }
+//    }))
 
     //this is really important for fb connect
     LiftRules.useXhtmlMimeType = false

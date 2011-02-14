@@ -77,7 +77,7 @@ object User {
 
   def findByKey(key: Key) = PersistenceHelper.findByKey(classOf[User], key)
 
-  def findByFbId(fbid: Long): Box[User] = find("select from " + className + " where fbid == :fbid", Map("fbid" -> fbid))
+  def findByFbId(fbid: Long): Box[User] = find("select from " + className + " where _fbid == :fbid", Map("fbid" -> fbid))
 
   def findByFbId(fbid: String): Box[User] = findByFbId(fbid.toLong)
 
