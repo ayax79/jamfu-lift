@@ -38,6 +38,9 @@ trait FacebookConnectImpl extends SimpleInjector {
     case _ => Empty
   }
 
+  def loginLink(redirect:String) =
+    "https://www.facebook.com/dialog/oauth?client_id="+appId.vend+"&redirect_uri="+redirect
+
 
 }
 
