@@ -6,21 +6,23 @@
  */
 package com.redpillsystems.jamfu.lib
 
-import org.apache.commons.httpclient.methods.GetMethod
 import java.lang.String
 import net.liftweb.common._
-import org.apache.commons.httpclient.{HttpMethodBase, HttpClient}
+import org.apache.http.client.methods.{HttpUriRequest, HttpGet}
+import org.apache.http.HttpResponse
+import org.apache.http.util.EntityUtils
+import org.apache.http.impl.client.DefaultHttpClient
 
 object HttpUtil {
 
   private def logger = Logger(this.getClass)
 
-  protected def http = new HttpClient
+  protected def http = new DefaultHttpClient
 
-  protected def execute[T <: HttpMethodBase](method: T): Box[String] = {
+  protected def execute[T <: HttpUriRequest](method: T): Box[String] = {
     try {
-      http.executeMethod(method)
-      method.getResponseBodyAsString match {
+      val response: HttpResponse = http.execute(method)
+      EntityUtils.toString(response.getEntity) match {
         case null => Empty
         case s: String => Full(s)
       }
@@ -30,12 +32,9 @@ object HttpUtil {
         logger.error(e.getMessage, e)
         Failure(e.getMessage)
     }
-    finally {
-      method.releaseConnection
-    }
   }
 
-  def get(url: String): Box[String] = execute(new GetMethod(url))
+  def get(url: String): Box[String] = execute(new HttpGet(url))
 
 }
 
