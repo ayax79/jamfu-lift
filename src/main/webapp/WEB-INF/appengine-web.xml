@@ -10,8 +10,6 @@
         <property name="com.facebook.api_key" value="32e800dec1c23f116038e0bc8641ee88" />
         <property name="com.facebook.secret" value="8225f22b8c9e5fa3af75c0d85280adbb" />
         <property name="app.url" value="http://jamfufu.appspot.com" />
-
-
     </system-properties>
 
     <sessions-enabled>true</sessions-enabled>

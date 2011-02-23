@@ -8,33 +8,32 @@ package com.redpillsystems.jamfu.lib
 
 import java.lang.String
 import net.liftweb.common._
-import org.apache.http.client.methods.{HttpUriRequest, HttpGet}
-import org.apache.http.HttpResponse
-import org.apache.http.util.EntityUtils
-import org.apache.http.impl.client.DefaultHttpClient
+import java.net.URL
+import org.apache.commons.io.IOUtils
+import java.io.{IOException, InputStream}
+import org.apache.commons.io.output.ByteArrayOutputStream
 
 object HttpUtil {
 
-  private def logger = Logger(this.getClass)
+  private val logger = Logger(this.getClass)
 
-  protected def http = new DefaultHttpClient
 
-  protected def execute[T <: HttpUriRequest](method: T): Box[String] = {
+  def get(url: String): Box[String] = {
+    val url2 = new URL(url)
+    val in: InputStream = url2.openStream
+    val out: ByteArrayOutputStream = new ByteArrayOutputStream
     try {
-      val response: HttpResponse = http.execute(method)
-      EntityUtils.toString(response.getEntity) match {
-        case null => Empty
-        case s: String => Full(s)
-      }
+      IOUtils.copy(in, out)
     }
     catch {
-      case e: Exception =>
-        logger.error(e.getMessage, e)
-        Failure(e.getMessage)
+      case ioe: IOException => Failure(ioe.getMessage, Full(ioe), Empty)
     }
+    finally {
+      in.close
+      out.close
+    }
+    Full(new String(out.toByteArray, "UTF-8"))
   }
-
-  def get(url: String): Box[String] = execute(new HttpGet(url))
 
 }
 

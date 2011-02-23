@@ -33,7 +33,7 @@ class Boot {
     // where to search for snippet, views, etc
     LiftRules.addToPackages("com.redpillsystems.jamfu")
 
-    val entries = Menu(Loc("Home", List("index"), "Home")) :: Nil
+    val entries = Menu(Loc("Home", List("index"), "Home")) :: Menu(Loc("Settings", List("settings"), "Settings")) :: Nil
     LiftRules.setSiteMap(SiteMap(entries:_*))
 
     /*

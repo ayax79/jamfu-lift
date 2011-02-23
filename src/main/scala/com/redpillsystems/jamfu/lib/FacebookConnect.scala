@@ -4,6 +4,7 @@ import net.liftweb.common.{Empty, Box, Full}
 import net.liftweb.util.{SimpleInjector}
 import net.liftweb.json.JsonParser
 import net.liftweb.json.JsonAST._
+import java.net.URLEncoder
 
 object FacebookConnect extends FacebookConnectImpl
 
@@ -15,14 +16,14 @@ trait FacebookConnectImpl extends SimpleInjector {
   lazy val httpGet: Inject[String => Box[String]] = new Inject[String => Box[String]]((url: String) => HttpUtil.get(url)) {}
 
   protected def tokenUrl(code: String) =
-    "https://graph.facebook.com/oauth/access_token?client_id=" + appId + "&redirect_uri=" + Constants.appUrlEncoded + "&client_secret=" + secret + "&code=" + code;
+    "https://graph.facebook.com/oauth/access_token?client_id=" + appId.vend + "&redirect_uri=" + Constants.appUrlEncoded + "&client_secret=" + secret.vend + "&code=" + code
 
-  protected def token(code: String) = httpGet.vend(tokenUrl(code))
+  def token(code: String) = httpGet.vend(tokenUrl(code))
 
   protected def graphUrl(accessToken: String) =
     "https://graph.facebook.com/me?" + accessToken
 
-  def userJson(accessToken: String): Box[FacebookUser] = httpGet.vend(graphUrl(accessToken)) match {
+  def user(accessToken: String): Box[FacebookUser] = httpGet.vend(graphUrl(accessToken)) match {
     case Full(s) =>
       val json = JsonParser.parse(s)
       val users = for {

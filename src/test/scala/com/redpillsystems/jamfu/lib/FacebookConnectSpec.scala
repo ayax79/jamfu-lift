@@ -35,7 +35,7 @@ object FacebookConnectSpec extends Specification with Mockito {
               "}"
 
       FacebookConnect.httpGet.doWith((url: String) => Full(json)) {
-        System.out.println("user json -->" + FacebookConnect.userJson("sdlfkjfsdljk"))
+        System.out.println("user json -->" + FacebookConnect.user("sdlfkjfsdljk"))
       }
     }
 
