@@ -23,6 +23,10 @@
         <vscaladoc.links.liftweb.pathsufix>scaladocs/</vscaladoc.links.liftweb.pathsufix>
         <vscaladoc.links.liftweb.baseurl>http://scala-tools.org/mvnsites/liftweb</vscaladoc.links.liftweb.baseurl>
         <gae.version>1.4.0</gae.version>
+        <com.facebook.app_id>119681858044432</com.facebook.app_id>
+        <com.facebook.api_key>32e800dec1c23f116038e0bc8641ee88</com.facebook.api_key>
+        <com.facebook.secret>8225f22b8c9e5fa3af75c0d85280adbb</com.facebook.secret>
+        <app.url>http://jamfufu.appspot.com</app.url>
     </properties>
 
     <!-- Set up repo for ScalaJPA -->
